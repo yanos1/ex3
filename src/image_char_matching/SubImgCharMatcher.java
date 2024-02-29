@@ -23,7 +23,6 @@ public class SubImgCharMatcher {
     public SubImgCharMatcher(char[] charset) {
 
         for (char c : charset) {
-            print();
             double charBrightness = getCharBrightness(c);
             if (treeMap.containsKey(charBrightness)){
                 treeMap.get(charBrightness).add(c);
@@ -61,25 +60,30 @@ public class SubImgCharMatcher {
      * @return the closest char.
      */
     public char getCharByImageBrightness(double brightness) {
-        Double closestKey = treeMap.floorKey(brightness);
-        if (closestKey == null) {
-            closestKey = treeMap.ceilingKey(brightness);
-            return treeMap.get(closestKey).get(0);
-        } else {
-            double diffLow = Math.abs(closestKey - brightness);
-            Double ceilingValue = treeMap.ceilingKey(brightness);
-            if (ceilingValue != null) {
-                double diffHigh = Math.abs(ceilingValue - brightness);
-                if (diffHigh < diffLow) {
-                    return treeMap.get(ceilingValue).get(0);
-                } else if (diffHigh == diffLow) {
-                    char c1 = treeMap.get(closestKey).get(0);
-                    char c2 = treeMap.get(ceilingValue).get(0);
-                    return c1 < c2 ? c1 : c2;
-                }
-            }
-            return treeMap.get(closestKey).get(0);
+        Double closestLowerBrightness = treeMap.floorKey(brightness);
+        Double closestHigherBrightness = treeMap.ceilingKey(brightness);
+
+        if (closestLowerBrightness == null) {
+            return treeMap.get(closestHigherBrightness).getFirst();
         }
+
+        if (closestHigherBrightness == null) {
+            return treeMap.get(closestLowerBrightness).getFirst();
+        }
+
+        double diffLow = Math.abs(closestLowerBrightness - brightness);
+        double diffHigh = Math.abs(closestHigherBrightness - brightness);
+
+        if (diffHigh < diffLow) {
+            return treeMap.get(closestHigherBrightness).getFirst();
+        }
+        else if (diffLow < diffHigh) {
+            return treeMap.get(closestLowerBrightness).getFirst();
+        }
+
+        char c1 = treeMap.get(closestLowerBrightness).getFirst();
+        char c2 = treeMap.get(closestHigherBrightness).getFirst();
+        return c1 < c2 ? c1 : c2;
     }
 
 
@@ -155,22 +159,13 @@ public class SubImgCharMatcher {
     }
 
     private void normalizeCells() {
-        print();
         TreeMap<Double, ArrayList<Character>> newMap = new TreeMap<>();
         for (var entry : treeMap.entrySet()) {
-            System.out.println(entry);
-            System.out.println("value " + entry.getValue());
-            System.out.println("item " + entry.getValue().get(0));
-//            System.out.println(entry);
-//            System.out.println(entry);
             double brightness = charBrightnesses.get(entry.getValue().get(0));
             ArrayList<Character> charArr = entry.getValue();
             newMap.put(normalizeBrightness(brightness), charArr);
-            System.out.println("Sucess");
-
         }
         treeMap = newMap;
-        print();
     }
 
     private void print() {
@@ -182,3 +177,4 @@ public class SubImgCharMatcher {
 
 
 }
+

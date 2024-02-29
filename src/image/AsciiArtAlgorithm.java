@@ -37,12 +37,11 @@ public class AsciiArtAlgorithm {
         }
         AsciiArtAlgorithm.print(asciiChars);
         SubImgCharMatcher matcher = new SubImgCharMatcher(asciiChars);
-        Image img = new Image("cat.jpeg");
+        Image img = new Image("assets/examples/cat.jpeg");
         AsciiArtAlgorithm algo = new AsciiArtAlgorithm(img,256,matcher);
         char[][] res = algo.run();
         HtmlAsciiOutput output = new HtmlAsciiOutput("out.html","Courier New");
         output.out(res);
     }
-
 }
 

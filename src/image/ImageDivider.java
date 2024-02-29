@@ -30,7 +30,6 @@ public class ImageDivider {
                 int startY = j * numPixelsInSquare;
                 for(int x = 0; x < numPixelsInSquare;++x) {
                     for (int y = 0 ; y < numPixelsInSquare; ++y) {
-                        System.out.println(i + " " + j + " " + x + " " + y );
                         dividedImage[i][j][x * (numPixelsInSquare) + y] = img.getPixel(startX + x,
                                 startY + y);
 
