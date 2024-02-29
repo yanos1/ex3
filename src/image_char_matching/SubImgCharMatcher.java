@@ -12,7 +12,7 @@ public class SubImgCharMatcher {
     public static final int PIXELS_IN_BOOL_ARRAY = 256;
     private double maxBrightness = 0;
     private double minBrightness = 1;
-    private final TreeMap<Double, ArrayList<Character>> treeMap = new TreeMap<>();
+    private TreeMap<Double, ArrayList<Character>> treeMap = new TreeMap<>();
     private final HashMap<Character,Double> charBrightnesses = new HashMap<>();
 
     /**
@@ -23,12 +23,17 @@ public class SubImgCharMatcher {
     public SubImgCharMatcher(char[] charset) {
 
         for (char c : charset) {
+            print();
             double charBrightness = getCharBrightness(c);
             if (treeMap.containsKey(charBrightness)){
                 treeMap.get(charBrightness).add(c);
                 Collections.sort(treeMap.get(charBrightness));
             } else {
-                treeMap.put(charBrightness, new ArrayList<>(c));    // initialize all starting values
+                var newList = new ArrayList<Character>();
+                newList.add(c);
+                treeMap.put(charBrightness,newList);
+                // initialize all
+                // starting values
             }
             maxBrightness = Math.max(maxBrightness, charBrightness);
             minBrightness = Math.min(minBrightness, charBrightness);
@@ -150,13 +155,29 @@ public class SubImgCharMatcher {
     }
 
     private void normalizeCells() {
+        print();
+        TreeMap<Double, ArrayList<Character>> newMap = new TreeMap<>();
         for (var entry : treeMap.entrySet()) {
+            System.out.println(entry);
+            System.out.println("value " + entry.getValue());
+            System.out.println("item " + entry.getValue().get(0));
+//            System.out.println(entry);
+//            System.out.println(entry);
             double brightness = charBrightnesses.get(entry.getValue().get(0));
             ArrayList<Character> charArr = entry.getValue();
-            treeMap.remove(entry.getKey());
-            treeMap.put(normalizeBrightness(brightness), charArr);
+            newMap.put(normalizeBrightness(brightness), charArr);
+            System.out.println("Sucess");
 
         }
+        treeMap = newMap;
+        print();
+    }
+
+    private void print() {
+        for (var entry : treeMap.entrySet()) {
+            System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());
+        }
+        System.out.println("-----------------------------------------------\n");
     }
 
 
