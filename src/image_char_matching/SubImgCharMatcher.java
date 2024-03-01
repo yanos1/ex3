@@ -64,25 +64,25 @@ public class SubImgCharMatcher {
         Double closestHigherBrightness = treeMap.ceilingKey(brightness);
 
         if (closestLowerBrightness == null) {
-            return treeMap.get(closestHigherBrightness).getFirst();
+            return treeMap.get(closestHigherBrightness).get(0);
         }
 
         if (closestHigherBrightness == null) {
-            return treeMap.get(closestLowerBrightness).getFirst();
+            return treeMap.get(closestLowerBrightness).get(0);
         }
 
         double diffLow = Math.abs(closestLowerBrightness - brightness);
         double diffHigh = Math.abs(closestHigherBrightness - brightness);
 
         if (diffHigh < diffLow) {
-            return treeMap.get(closestHigherBrightness).getFirst();
+            return treeMap.get(closestHigherBrightness).get(0);
         }
         else if (diffLow < diffHigh) {
-            return treeMap.get(closestLowerBrightness).getFirst();
+            return treeMap.get(closestLowerBrightness).get(0);
         }
 
-        char c1 = treeMap.get(closestLowerBrightness).getFirst();
-        char c2 = treeMap.get(closestHigherBrightness).getFirst();
+        char c1 = treeMap.get(closestLowerBrightness).get(0);
+        char c2 = treeMap.get(closestHigherBrightness).get(0);
         return c1 < c2 ? c1 : c2;
     }
 
