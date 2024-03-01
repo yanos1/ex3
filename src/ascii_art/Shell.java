@@ -25,8 +25,13 @@ public class Shell {
     private static final String INCREASE_RESOLUTION_KEYWORD = "up";
     private static final String DECREASE_RESOLUTION_KEYWORD = "down";
     private static final String RESOLUTION_CHANGED_MESSAGE = "Resolution set to %d.";
-    private static final String RESOLUTION_WRONG_FORMAT_EXCEPTION_STRING = "change resolution";
+    private static final String RESOLUTION_WRONG_FORMAT_EXCEPTION_ACTION = "change resolution";
     private static final String CHANGE_IMAGE_COMMAND = "image";
+    private static final String CHANGE_OUTPUT_COMMAND = "output";
+    private static final String OUTPUT_TO_CONSOLE_KEYWORD = "console";
+    private static final String OUTPUT_TO_HTML_KEYWORD = "html";
+    private static final String OUTPUT_WRONG_FORMAT_EXCEPTION_ACTION = "change output";
+
 
     private final SortedSet<Character> asciiChars;
     private int resolution;
@@ -95,7 +100,7 @@ public class Shell {
                 return true;
             case CHANGE_RESOLUTION_COMMAND:
                 if (splitInput.length < 2) {
-                    throw new IncorrectFormatException(RESOLUTION_WRONG_FORMAT_EXCEPTION_STRING);
+                    throw new IncorrectFormatException(RESOLUTION_WRONG_FORMAT_EXCEPTION_ACTION);
                 }
                 parseResolutionCommand(splitInput[1]);
                 return true;
@@ -104,6 +109,12 @@ public class Shell {
                     throw new IncorrectFormatException(CHANGE_IMAGE_COMMAND);
                 }
                 parseImageCommand(splitInput[1]);
+                return true;
+            case CHANGE_OUTPUT_COMMAND:
+                if (splitInput.length < 2) {
+                    throw new IncorrectFormatException(OUTPUT_WRONG_FORMAT_EXCEPTION_ACTION);
+                }
+                parseOutputCommand(splitInput[1]);
                 return true;
             default:
                 throw new UnknownCommandException();
@@ -180,7 +191,7 @@ public class Shell {
     private void parseResolutionCommand(String input) throws
             IncorrectFormatException, ResolutionOutOfBoundsException {
         if (input.equals(INCREASE_RESOLUTION_KEYWORD)) {
-            if (resolution*2 > image.getWidth()) {
+            if (resolution*2 > calculateMaxResolution()) {
                 throw new ResolutionOutOfBoundsException();
             }
             resolution *= 2;
@@ -188,22 +199,47 @@ public class Shell {
             return;
         }
         if (input.equals(DECREASE_RESOLUTION_KEYWORD)) {
-            if (resolution/2 < Math.max(1, image.getWidth()/image.getHeight())) {
+            if (resolution/2 < calculateMinResolution()) {
                 throw new ResolutionOutOfBoundsException();
             }
             resolution /= 2;
             System.out.printf((RESOLUTION_CHANGED_MESSAGE) + "%n", resolution);
             return;
         }
-        throw new IncorrectFormatException(RESOLUTION_WRONG_FORMAT_EXCEPTION_STRING);
+        throw new IncorrectFormatException(RESOLUTION_WRONG_FORMAT_EXCEPTION_ACTION);
+    }
+
+    private int calculateMaxResolution() {
+        return image.getWidth();
+    }
+
+    private int calculateMinResolution() {
+        return Math.max(1, image.getWidth()/image.getHeight());
     }
 
     private void parseImageCommand(String input) throws ImageFileException {
+        Image temp = image;
         try {
-            Image image = new Image(input);
+            image = new Image(input);
         } catch (IOException e) {
             throw new ImageFileException(e);
         }
+
+        while (true) {
+            boolean tooSmall = resolution < calculateMinResolution();
+            boolean tooBig = resolution > calculateMaxResolution();
+            if (!tooSmall && !tooBig) {
+                break;
+            }
+            if (tooSmall && tooBig) {
+                image = temp;
+                throw new ImageFileException(null);
+            }
+            resolution = tooSmall ? resolution*2 : resolution/2;
+        }
+    }
+
+    private void parseOutputCommand(String s) {
     }
 
     /* -------------------- *\
