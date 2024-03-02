@@ -9,10 +9,10 @@ public class SubImgCharMatcher {
     /**
      * The number of pixels in each character.
      */
-    public static final int PIXELS_IN_BOOL_ARRAY = 256;
+    private static final int ASCII_CHAR_PIXEL_WIDTH = 256;
     private double maxBrightness = 0;
     private double minBrightness = 1;
-    private TreeMap<Double, ArrayList<Character>> treeMap = new TreeMap<>();
+    private TreeMap<Double, TreeSet<Character>> treeMap = new TreeMap<>();
     private final HashMap<Character,Double> charBrightnesses = new HashMap<>();
 
     /**
@@ -26,13 +26,11 @@ public class SubImgCharMatcher {
             double charBrightness = getCharBrightness(c);
             if (treeMap.containsKey(charBrightness)){
                 treeMap.get(charBrightness).add(c);
-                Collections.sort(treeMap.get(charBrightness));
             } else {
-                var newList = new ArrayList<Character>();
-                newList.add(c);
-                treeMap.put(charBrightness,newList);
-                // initialize all
-                // starting values
+                var newSet = new TreeSet<Character>();
+                newSet.add(c);
+                treeMap.put(charBrightness,newSet);
+
             }
             maxBrightness = Math.max(maxBrightness, charBrightness);
             minBrightness = Math.min(minBrightness, charBrightness);
@@ -42,15 +40,7 @@ public class SubImgCharMatcher {
     }
 
 
-    /**
-     * perform a linear stretch of the given brightness
-     *
-     * @param brightness brightness of a character
-     * @return the new brightness
-     */
-    private Double normalizeBrightness(Double brightness) {
-        return (brightness - minBrightness) / (maxBrightness - minBrightness);
-    }
+
 
     /**
      * given a brightness value of a sub image, this method returns the char with the closest brightness to
@@ -64,25 +54,24 @@ public class SubImgCharMatcher {
         Double closestHigherBrightness = treeMap.ceilingKey(brightness);
 
         if (closestLowerBrightness == null) {
-            return treeMap.get(closestHigherBrightness).get(0);
+            return treeMap.get(closestHigherBrightness).first();
         }
 
         if (closestHigherBrightness == null) {
-            return treeMap.get(closestLowerBrightness).get(0);
+            return treeMap.get(closestLowerBrightness).first();
         }
 
         double diffLow = Math.abs(closestLowerBrightness - brightness);
         double diffHigh = Math.abs(closestHigherBrightness - brightness);
 
         if (diffHigh < diffLow) {
-            return treeMap.get(closestHigherBrightness).get(0);
+            return treeMap.get(closestHigherBrightness).first();
         }
         else if (diffLow < diffHigh) {
-            return treeMap.get(closestLowerBrightness).get(0);
+            return treeMap.get(closestLowerBrightness).first();
         }
-
-        char c1 = treeMap.get(closestLowerBrightness).get(0);
-        char c2 = treeMap.get(closestHigherBrightness).get(0);
+        char c1 = treeMap.get(closestLowerBrightness).first();
+        char c2 = treeMap.get(closestHigherBrightness).first();
         return c1 < c2 ? c1 : c2;
     }
 
@@ -96,7 +85,6 @@ public class SubImgCharMatcher {
         if (treeMap.containsKey(normalizedBrightness)) {
             var charArray = treeMap.get(normalizedBrightness);
             charArray.add(c);
-            Collections.sort(charArray);
         } else {
             boolean needToNormalize = false;
             if (charBrightness > maxBrightness) {
@@ -106,23 +94,14 @@ public class SubImgCharMatcher {
                 minBrightness = charBrightness;
                 needToNormalize = true;
             }
-            treeMap.put(normalizedBrightness, new ArrayList<>(c));
+            TreeSet<Character> newSet = new TreeSet<>();
+            newSet.add(c);
+            treeMap.put(normalizedBrightness, newSet);
             if (needToNormalize) {
                 normalizeCells();
             }
 
         }
-    }
-
-    private double getCharBrightness(char c) {
-        double charBrightness;
-        if (charBrightnesses.containsKey(c)) {
-            charBrightness = charBrightnesses.get(c);
-        } else {
-            charBrightness = calculateBrightnessOfChar(c);
-            charBrightnesses.put(c,charBrightness);
-        }
-        return charBrightness;
     }
 
     /**
@@ -155,25 +134,48 @@ public class SubImgCharMatcher {
                 }
             }
         }
-        return (double) numOfWhitePixels / PIXELS_IN_BOOL_ARRAY;
+        return (double) numOfWhitePixels / ASCII_CHAR_PIXEL_WIDTH;
     }
 
     private void normalizeCells() {
-        TreeMap<Double, ArrayList<Character>> newMap = new TreeMap<>();
+        TreeMap<Double, TreeSet<Character>> newMap = new TreeMap<>();
         for (var entry : treeMap.entrySet()) {
-            double brightness = charBrightnesses.get(entry.getValue().get(0));
-            ArrayList<Character> charArr = entry.getValue();
-            newMap.put(normalizeBrightness(brightness), charArr);
+            double brightness = charBrightnesses.get(entry.getValue().first());
+            TreeSet<Character> charSet = entry.getValue();
+            newMap.put(normalizeBrightness(brightness), charSet);
         }
         treeMap = newMap;
     }
 
-    private void print() {
-        for (var entry : treeMap.entrySet()) {
-            System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());
+
+    private double getCharBrightness(char c) {
+        double charBrightness;
+        if (charBrightnesses.containsKey(c)) {
+            charBrightness = charBrightnesses.get(c);
+        } else {
+            charBrightness = calculateBrightnessOfChar(c);
+            charBrightnesses.put(c,charBrightness);
         }
-        System.out.println("-----------------------------------------------\n");
+        return charBrightness;
     }
+
+    /**
+     * perform a linear stretch of the given brightness
+     *
+     * @param brightness brightness of a character
+     * @return the new brightness
+     */
+    private Double normalizeBrightness(Double brightness) {
+        return (brightness - minBrightness) / (maxBrightness - minBrightness);
+    }
+
+
+//    private void print() {
+//        for (var entry : treeMap.entrySet()) {
+//            System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());
+//        }
+//        System.out.println("-----------------------------------------------\n");
+//    }
 
 
 }

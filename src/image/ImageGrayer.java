@@ -6,22 +6,11 @@ import java.awt.*;
  * This class transforms an image to black and white image.
  */
 public class ImageGrayer {
-    /**
-     * the max value for rgb
-     */
-    public static final int MAX_RGB_COLOR = 255;
-    /**
-     * the constant which turns red color to grey.
-     */
-    public static final double RED_TO_GREY_CONSTANT = 0.2126;
-    /**
-     * the constant which turns green color to grey.
-     */
-    public static final double GREEN_TO_GREY_CONSTANT = 0.7152;
-    /**
-     * the constant which turns blue color to grey.
-     */
-    public static final double BLUE_TO_GREY_CONSTANT = 0.0722;
+
+    private static final int MAX_RGB_COLOR = 255;
+    private static final double RED_TO_GREY_CONSTANT = 0.2126;
+    private static final double GREEN_TO_GREY_CONSTANT = 0.7152;
+    private static final double BLUE_TO_GREY_CONSTANT = 0.0722;
     private final Color[][][] coloredImage;
 
     /**

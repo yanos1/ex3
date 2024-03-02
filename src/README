@@ -1,15 +1,57 @@
-1.) ImageDivider class - a class that has 1 method divideImage, that takes an Image object and divides it to
-    sub images based on given resolution.
 
-2.) ImageGrayer class - a class that has 1 method greyImage, that takes a colored Image and turns it to a
-    black and white image.
+1.)
+    1.) ImageDivider class - a class that has 1 method divideImage, that takes an Image object and divides it to
+        sub images based on given resolution.
 
-3.) ImagePadder class - a class that has 1 method padImage, that takes an image and applies padding to it.
+    2.) ImageGrayer class - a class that has 1 method greyImage, that takes a colored Image and turns it to a
+        black and white image.
 
-4.) ImageToAsciiConverter - a class that implements the facade design pattern, and uses all previous classes
-    to turn an image to ascii art. has 1 method convertImageToAsciiArt that returns an image of characters.
+    3.) ImagePadder class - a class that has 1 method padImage, that takes an image and applies padding to it.
 
-5.) AsciiArtAlgorithm - this class is in charge of executing the ascii art algorithm. it takes an image and
-parameters as arguments,then uses ImageToAsciiConverter services to turn an image to asciiart.
+    4.) ImageToAsciiConverter - a class that implements the facade design pattern, and uses all previous classes
+        to turn an image to ascii art. has 1 method convertImageToAsciiArt that returns an image of characters.
 
-6.)
+    5.) AsciiArtAlgorithm - this class is in charge of executing the ascii art algorithm. it takes an image and
+        parameters as arguments,then uses ImageToAsciiConverter services to turn an image to ascii art.
+
+    6.) SubImgCharMatcher This class in in charge of turning a sub image into a character based on its brightness.
+        It is used by
+
+    7.) Shell - The Shell class acts as the bridge between the user and the program. The user gets to decide
+        which chars are to be used, which image to convert, and in what resolution.
+
+    8.) Exception classes. Added custom exceptions to handle incorrect format, Unknown command, too big
+        resolution, empty charset, and wrong image path.
+
+2.)
+    1.) TreeMap - We used a tree map for the SubImgCharMatcher class. This data structure utilizes a balanced
+    tree, such that each element is a pair of key,value. In our case the key was the brightness and the value
+    was a TreeSet of characters which match to the brightness. This allowed us to quickly pair brightness to
+    characters, and gave us the ability to use the builtin floorKey and ceilingKey to quickly look for the
+    closest brightness in the tree, which is why we chose the data structure.
+    Complexity:
+    This data structure gave us the ability to look for the closest brightness in O(log(n)) time.
+    add and remove in O(log(n)) time (in the average case, in the worst case - normalizing all values - O(n)).
+
+    2.) Hashmap - We used a Hashmap in the SubImgCharMatcher class. We used it to store previous brightness
+    calculations in order to reduce the number of calculations. We chose to use it because we found it worth
+    trading some memory for a lot of redundant calculations.
+    Complexity:
+    This data structure supports adding in O(1) complexity. We only add to this structure in ou exercise.
+
+    3.) TreeSet - We used a tree set in SubImgCharMatcher and in Shell. This is a hash based data structure
+    that keeps a sorted set. In subImgCharMatcher we used it as keys for the TreeMap. this allowed us to
+    retrieve the lowest item in the set in O(1) time. We chose this structure because it allowed us to easily
+    return the lowest item in the set, while also not keeping duplicates of characters which can lead to
+    mistakes.
+    Complexity:
+    Adding and removing in O(1) time, retrieving items in it in O(1) time.
+
+
+3.)
+    We used javas exception mechanism to handle user input problems and to print the corresponding messages.
+    The shell object runs a loop for getting user input, and after each input it parses it in sub-methods.
+    there are many problems that can pop-up when parsing the input, and they all pop-up in different parts
+    of the process, so exceptions give us an elegant solution. just throw a custom exception with a custom
+    message whenever such problem arises, catch all of these specific exceptions in the main loop,
+    and handle them there (in our case print them and move on to the next input request).

@@ -7,15 +7,8 @@ import java.awt.*;
  * a power of 2.
  */
 public class ImagePadder {
-    /**
-     * the first power of 2
-     */
-    public static final int FIRST_POWER_OF_2 = 1;
-    /**
-     * mutiplication factor to calculate next powers of 2.
-     */
-    public static final int MULTIPLICATION_FACTOR = 2;
-
+    private static final int FIRST_POWER_OF_2 = 1;
+    private static final int MULTIPLICATION_FACTOR = 2;
     private final Image img;
 
     /**

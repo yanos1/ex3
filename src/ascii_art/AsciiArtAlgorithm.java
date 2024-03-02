@@ -35,13 +35,5 @@ public class AsciiArtAlgorithm {
         ImageToAsciiConverter converter = new ImageToAsciiConverter(this.img,this.resolution,matcher);
         return converter.convertImageToAsciiArt();
     }
-
-    public void setImage(Image img) {
-        this.img = img;
-    }
-
-    public void setResolution(int resolution) {
-        this.resolution = resolution;
-    }
 }
 
