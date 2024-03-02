@@ -2,19 +2,33 @@ package image;
 import image_char_matching.SubImgCharMatcher;
 import java.awt.*;
 
+/**
+ * This class uses the facade design pattern to execute all steps needed to convert an image to ascci art.
+ */
 public class ImageToAsciiConverter {
     private final Image img;
     private final int resolution;
     private final SubImgCharMatcher matcher;
+
+    /**
+     * Constructs an object that has access to convertImageToAsciiArt.
+     * @param img image to convert
+     * @param resolution image resolution
+     * @param matcher an object that helps with turning pixels into ascii chars.
+     */
     public ImageToAsciiConverter(Image img, int resolution, SubImgCharMatcher matcher) {
         this.img = img;
         this.resolution = resolution;
         this.matcher = matcher;
     }
 
+    /**
+     * this method does the entire process of turning an image to ascci art.
+     * @return char[][] that represents the new ascii art image.
+     */
     public char[][] convertImageToAsciiArt() {
         ImagePadder imagePadder = new ImagePadder(this.img);
-        Color[][] padded = imagePadder.getPaddedImage();
+        Color[][] padded = imagePadder.padImage();
         Image paddedImage = new Image(padded, padded.length, padded[0].length);
         ImageDivider imageDivider = new ImageDivider(paddedImage, resolution);
         Color[][][] dividedImage = imageDivider.divideImage();

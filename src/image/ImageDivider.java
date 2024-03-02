@@ -7,12 +7,17 @@ import java.awt.*;
  * is divided into sub images.
  */
 public class ImageDivider {
-    private int numPixelsInSquare;
-    private int rows;
-    private int cols;
-    private Image img;
-    private Color[][][] dividedImage;
+    private final int numPixelsInSquare;
+    private final int rows;
+    private final int cols;
+    private final Image img;
+    private final Color[][][] dividedImage;
 
+    /**
+     * contructor for image divider.
+     * @param img the image to divide.
+     * @param resolution the resolution of the image, used to determine the square size.
+     */
     public ImageDivider(Image img, int resolution) {
         this.img = img;
         int numPixelsInRow = this.img.getWidth();
@@ -23,47 +28,33 @@ public class ImageDivider {
         dividedImage = new Color[rows][cols][numPixelsInSquare*numPixelsInSquare];
     }
 
+    /**
+     * This method devides the image to sub images.
+     * @return the divided image.
+     */
     public Color[][][] divideImage() {
         for (int i = 0; i < rows; ++i) {
             for (int j = 0; j < cols; ++j) {
-                int startX = i * numPixelsInSquare;
-                int startY = j * numPixelsInSquare;
-                for(int x = 0; x < numPixelsInSquare;++x) {
-                    for (int y = 0 ; y < numPixelsInSquare; ++y) {
-                        dividedImage[i][j][x * (numPixelsInSquare) + y] = img.getPixel(startX + x,
-                                startY + y);
-
-                    }
-                    // 110 -> 22
-                    // col factor - 1    row factor - 0
-                }
-
-
+                extractSubImage(i, j);
             }
         }
         return dividedImage;
     }
 
-//    public Color[][][] divideImage() {
-//        // Determine the dimensions of the divided image
-//        // Iterate over the sub-images
-//        for (int i = 0; i < rows; i++) {
-//            for (int j = 0; j < cols; j++) {
-//                // Calculate the starting pixel coordinates for the sub-image
-//                int startX = i * numPixelsInSquare;
-//                int startY = j * numPixelsInSquare;
-//
-//                // Extract pixels for the sub-image
-//                for (int x = 0; x < numPixelsInSquare; x++) {
-//                    for (int y = 0; y < numPixelsInSquare; y++) {
-//                        // Populate dividedImage with pixels from the original image
-//                        dividedImage[i][j][x * numPixelsInSquare + y] = img.getPixel(startX + x, startY + y);
-//                    }
-//                }
-//            }
-//        }
-//
-//        return dividedImage;
-//    }
+    /**
+     * helper method for divideImage. it calculates 1 sub image based on cordnates i,j
+     * @param i the starting row
+     * @param j the starting col
+     */
+    private void extractSubImage(int i, int j) {
+        int startX = i * numPixelsInSquare;
+        int startY = j * numPixelsInSquare;
+        for(int x = 0; x < numPixelsInSquare;++x) {
+            for (int y = 0 ; y < numPixelsInSquare; ++y) {
+                dividedImage[i][j][x * (numPixelsInSquare) + y] = img.getPixel(startX + x,
+                        startY + y);
+            }
+        }
+    }
 
 }

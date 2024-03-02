@@ -16,6 +16,11 @@ public class Image {
     private final int width;
     private final int height;
 
+    /**
+     * contructor for opening image
+     * @param filename the file to open
+     * @throws IOException if file failed to  open we throw.
+     */
     public Image(String filename) throws IOException {
         BufferedImage im = ImageIO.read(new File(filename));
         width = im.getWidth();
