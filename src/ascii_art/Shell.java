@@ -2,6 +2,7 @@ package ascii_art;
 
 import ascii_output.AsciiOutput;
 import ascii_output.ConsoleAsciiOutput;
+import ascii_output.HtmlAsciiOutput;
 import image.Image;
 
 import java.io.IOException;
@@ -15,6 +16,7 @@ public class Shell {
     private static final String QUERY_PREFIX = ">>> ";
     private static final String EXIT = "exit";
     private static final String PRINT_ASCII_CHARACTERS = "chars";
+    private static final String GENERATE_ASCII_ART = "asciiArt";
     private static final String ADD_ASCII_CHARACTERS_COMMAND = "add";
     private static final String REMOVE_ASCII_CHARACTERS_COMMAND = "remove";
     private static final String ALL_ASCII_CHARACTERS_KEYWORD = "all";
@@ -31,7 +33,8 @@ public class Shell {
     private static final String OUTPUT_TO_CONSOLE_KEYWORD = "console";
     private static final String OUTPUT_TO_HTML_KEYWORD = "html";
     private static final String OUTPUT_WRONG_FORMAT_EXCEPTION_ACTION = "change output";
-
+    private static final String OUTPUT_HTML_FILE_NAME = "out.html";
+    private static final String OUTPUT_HTML_FONT = "Courier New";
 
     private final SortedSet<Character> asciiChars;
     private int resolution;
@@ -60,8 +63,8 @@ public class Shell {
             try {
                 anotherQuery = queryUser();
             }
-            catch (IncorrectFormatException | UnknownCommandException |
-                   ResolutionOutOfBoundsException | ImageFileException e) {
+            catch (IncorrectFormatException | UnknownCommandException | ResolutionOutOfBoundsException |
+                   ImageFileException | AsciiArtEmptyCharsetException e) {
                 System.out.println(e.getMessage());
             }
         }
@@ -72,7 +75,7 @@ public class Shell {
     \* -------------------- */
 
     private boolean queryUser() throws IncorrectFormatException, UnknownCommandException,
-            ResolutionOutOfBoundsException, ImageFileException {
+            ResolutionOutOfBoundsException, ImageFileException, AsciiArtEmptyCharsetException {
         System.out.print(QUERY_PREFIX);
         String input = KeyboardInput.readLine();
 
@@ -81,6 +84,9 @@ public class Shell {
                 return false;
             case PRINT_ASCII_CHARACTERS:
                 printAsciiChars();
+                return true;
+            case GENERATE_ASCII_ART:
+                generateAsciiArt();
                 return true;
         }
 
@@ -132,6 +138,20 @@ public class Shell {
         }
         output.deleteCharAt(output.length()-1);
         System.out.println(output);
+    }
+
+    private void generateAsciiArt() throws IllegalArgumentException, AsciiArtEmptyCharsetException {
+        if (asciiChars.isEmpty()) {
+            throw new AsciiArtEmptyCharsetException();
+        }
+        char[] asciiCharArray = new char[asciiChars.size()];
+        for (int i=0; i<asciiChars.size(); i++) {
+            asciiCharArray[i] = asciiChars.toArray(new Character[0])[i];
+        }
+
+        AsciiArtAlgorithm algo = new AsciiArtAlgorithm(image,resolution,asciiCharArray);
+        char[][] res = algo.run();
+        output.out(res);
     }
 
     private void parseAddCommand(String input) throws IncorrectFormatException {
@@ -239,7 +259,16 @@ public class Shell {
         }
     }
 
-    private void parseOutputCommand(String s) {
+    private void parseOutputCommand(String input) throws IncorrectFormatException {
+        if (input.equals(OUTPUT_TO_CONSOLE_KEYWORD)) {
+            output = new ConsoleAsciiOutput();
+            return;
+        }
+        if (input.equals(OUTPUT_TO_HTML_KEYWORD)) {
+            output = new HtmlAsciiOutput(OUTPUT_HTML_FILE_NAME, OUTPUT_HTML_FONT);
+            return;
+        }
+        throw new IncorrectFormatException(OUTPUT_WRONG_FORMAT_EXCEPTION_ACTION);
     }
 
     /* -------------------- *\

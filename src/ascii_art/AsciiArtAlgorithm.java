@@ -5,21 +5,24 @@ import image.ImageToAsciiConverter;
 import image_char_matching.SubImgCharMatcher;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class AsciiArtAlgorithm {
 
-    private SubImgCharMatcher matcher;
-    private Image img;
-    private int resolution;
+//    private SubImgCharMatcher matcher;
+    private final char[] asciiChars;
+    private final Image img;
+    private final int resolution;
 
-    public AsciiArtAlgorithm(Image img, int resolution, SubImgCharMatcher matcher) {
-        this.matcher = matcher;
+    public AsciiArtAlgorithm(Image img, int resolution, char[] asciiChars) {
+        this.asciiChars = asciiChars;
         this.img = img;
         this.resolution = resolution;
     }
 
     public char [][] run() {
-        ImageToAsciiConverter converter = new ImageToAsciiConverter(this.img,this.resolution,this.matcher);
+        SubImgCharMatcher matcher = new SubImgCharMatcher(asciiChars);
+        ImageToAsciiConverter converter = new ImageToAsciiConverter(this.img,this.resolution,matcher);
         return converter.convertImageToAsciiArt();
     }
 
