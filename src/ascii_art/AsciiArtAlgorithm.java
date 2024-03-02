@@ -11,8 +11,8 @@ public class AsciiArtAlgorithm {
 
 //    private SubImgCharMatcher matcher;
     private final char[] asciiChars;
-    private final Image img;
-    private final int resolution;
+    private Image img;
+    private int resolution;
 
     /**
      * Constructor for the class used by the user.
@@ -34,6 +34,14 @@ public class AsciiArtAlgorithm {
         SubImgCharMatcher matcher = new SubImgCharMatcher(asciiChars);
         ImageToAsciiConverter converter = new ImageToAsciiConverter(this.img,this.resolution,matcher);
         return converter.convertImageToAsciiArt();
+    }
+
+    public void setImage(Image img) {
+        this.img = img;
+    }
+
+    public void setResolution(int resolution) {
+        this.resolution = resolution;
     }
 }
 

@@ -1,0 +1,15 @@
+1.) ImageDivider class - a class that has 1 method divideImage, that takes an Image object and divides it to
+    sub images based on given resolution.
+
+2.) ImageGrayer class - a class that has 1 method greyImage, that takes a colored Image and turns it to a
+    black and white image.
+
+3.) ImagePadder class - a class that has 1 method padImage, that takes an image and applies padding to it.
+
+4.) ImageToAsciiConverter - a class that implements the facade design pattern, and uses all previous classes
+    to turn an image to ascii art. has 1 method convertImageToAsciiArt that returns an image of characters.
+
+5.) AsciiArtAlgorithm - this class is in charge of executing the ascii art algorithm. it takes an image and
+parameters as arguments,then uses ImageToAsciiConverter services to turn an image to asciiart.
+
+6.)
