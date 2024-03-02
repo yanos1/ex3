@@ -9,6 +9,10 @@ import java.io.IOException;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+
+/**
+ *  Handles shell UI: gets/validates all parameters, activates the algorithm.
+ */
 public class Shell {
     private static final char[] DEFAULT_CHARACTERS = {'0','1','2','3','4','5','6','7','8','9'};
     private static final int DEFAULT_RESOLUTION = 128;
@@ -41,11 +45,22 @@ public class Shell {
     private Image image;
     private AsciiOutput output;
 
+    /**
+     * Default constructor.
+     * @throws IOException If image is not found.
+     */
     public Shell () throws IOException {
         this(DEFAULT_CHARACTERS, DEFAULT_RESOLUTION, new Image(DEFAULT_IMAGE_PATH),
                 new ConsoleAsciiOutput());
     }
 
+    /**
+     * Main constructor.
+     * @param asciiChars A list of ascii chars from which to build the ascii image.
+     * @param resolution Resolution of the created image (number of chars in each row).
+     * @param image Original image to convert to ascii image.
+     * @param output Method for showing new image.
+     */
     public Shell (char[] asciiChars, int resolution, Image image, AsciiOutput output) {
         this.asciiChars = new TreeSet<>();
         for (char c : asciiChars) {
@@ -56,6 +71,9 @@ public class Shell {
         this.output = output;
     }
 
+    /**
+     * Main function, starts the shell UI.
+     */
     public void run () {
         boolean anotherQuery = true;
 
@@ -74,6 +92,9 @@ public class Shell {
          Private Methods
     \* -------------------- */
 
+    /*
+     * Gets one command from user and call relevant function
+     */
     private boolean queryUser() throws IncorrectFormatException, UnknownCommandException,
             ResolutionOutOfBoundsException, ImageFileException, AsciiArtEmptyCharsetException {
         System.out.print(QUERY_PREFIX);
@@ -127,6 +148,9 @@ public class Shell {
         }
     }
 
+    /*
+     * Shows list of current ascii characters.
+     */
     private void printAsciiChars() {
         if (asciiChars.isEmpty()) {
             System.out.println();
@@ -140,6 +164,9 @@ public class Shell {
         System.out.println(output);
     }
 
+    /*
+     * Calls algorithm to generate ascii art image.
+     */
     private void generateAsciiArt() throws IllegalArgumentException, AsciiArtEmptyCharsetException {
         if (asciiChars.isEmpty()) {
             throw new AsciiArtEmptyCharsetException();
@@ -154,6 +181,9 @@ public class Shell {
         output.out(res);
     }
 
+    /*
+     * Handles command to add additional ascii characters
+     */
     private void parseAddCommand(String input) throws IncorrectFormatException {
         if (input.length() == 1) {
             asciiChars.add(input.charAt(0));
@@ -181,6 +211,9 @@ public class Shell {
         throw new IncorrectFormatException(ADD_ASCII_CHARACTERS_COMMAND);
     }
 
+    /*
+     * Handles command to remove ascii characters
+     */
     private void parseRemoveCommand(String input) throws IncorrectFormatException {
         if (input.length() == 1) {
             asciiChars.remove(input.charAt(0));
@@ -208,6 +241,9 @@ public class Shell {
         throw new IncorrectFormatException(REMOVE_ASCII_CHARACTERS_COMMAND);
     }
 
+    /*
+     * Handles command to change resolution
+     */
     private void parseResolutionCommand(String input) throws
             IncorrectFormatException, ResolutionOutOfBoundsException {
         if (input.equals(INCREASE_RESOLUTION_KEYWORD)) {
@@ -229,14 +265,23 @@ public class Shell {
         throw new IncorrectFormatException(RESOLUTION_WRONG_FORMAT_EXCEPTION_ACTION);
     }
 
+    /*
+     * Calculates maximum width of ascii image.
+     */
     private int calculateMaxResolution() {
         return image.getWidth();
     }
 
+    /*
+     * Calculates minimum width of ascii image.
+     */
     private int calculateMinResolution() {
         return Math.max(1, image.getWidth()/image.getHeight());
     }
 
+    /*
+     * Handles command to change image
+     */
     private void parseImageCommand(String input) throws ImageFileException {
         Image temp = image;
         try {
@@ -259,6 +304,9 @@ public class Shell {
         }
     }
 
+    /*
+     * Handles command to change output method
+     */
     private void parseOutputCommand(String input) throws IncorrectFormatException {
         if (input.equals(OUTPUT_TO_CONSOLE_KEYWORD)) {
             output = new ConsoleAsciiOutput();
@@ -275,6 +323,10 @@ public class Shell {
                Main
     \* -------------------- */
 
+    /**
+     * Main function.
+     * @param args expects no arguments.
+     */
     public static void main(String[] args) {
         Shell shell = null;
         try {
