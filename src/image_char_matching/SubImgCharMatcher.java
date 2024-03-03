@@ -6,9 +6,6 @@ import java.util.*;
  * This class is in charge of matching a char to a sub image based on its brightness.
  */
 public class SubImgCharMatcher {
-    /**
-     * The number of pixels in each character.
-     */
     private static final int ASCII_CHAR_PIXEL_WIDTH = 256;
     private double maxBrightness = 0;
     private double minBrightness = 1;
@@ -38,9 +35,6 @@ public class SubImgCharMatcher {
         // normalize all cells.
         normalizeCells();
     }
-
-
-
 
     /**
      * given a brightness value of a sub image, this method returns the char with the closest brightness to
@@ -74,7 +68,6 @@ public class SubImgCharMatcher {
         char c2 = treeMap.get(closestHigherBrightness).first();
         return c1 < c2 ? c1 : c2;
     }
-
 
     /**
      * Add a char to the charset.
@@ -168,15 +161,5 @@ public class SubImgCharMatcher {
     private Double normalizeBrightness(Double brightness) {
         return (brightness - minBrightness) / (maxBrightness - minBrightness);
     }
-
-
-//    private void print() {
-//        for (var entry : treeMap.entrySet()) {
-//            System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());
-//        }
-//        System.out.println("-----------------------------------------------\n");
-//    }
-
-
 }
 
