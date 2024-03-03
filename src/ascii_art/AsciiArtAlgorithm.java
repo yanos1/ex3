@@ -25,6 +25,7 @@ public class AsciiArtAlgorithm {
             for (char c : asciiChars) {
                 matcher.addChar(c);
             }
+
         }
         this.img = img;
         this.resolution = resolution;

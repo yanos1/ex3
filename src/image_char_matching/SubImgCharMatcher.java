@@ -116,7 +116,12 @@ public class SubImgCharMatcher {
             }
         }
     }
-
+    public void resetTree() {
+        this.treeMap.clear();
+    }
+    /*
+        calculate brightness for a single characrter.
+     */
     private double calculateBrightnessOfChar(char c) {
         boolean[][] boolArray = CharConverter.convertToBoolArray(c);
         int numOfWhitePixels = 0;
@@ -129,7 +134,9 @@ public class SubImgCharMatcher {
         }
         return (double) numOfWhitePixels / ASCII_CHAR_PIXEL_WIDTH;
     }
-
+    /*
+    apply normalization for all cells. (Lienar stretch).
+     */
     private void normalizeCells() {
         TreeMap<Double, TreeSet<Character>> newMap = new TreeMap<>();
         for (var entry : treeMap.entrySet()) {
@@ -140,7 +147,9 @@ public class SubImgCharMatcher {
         treeMap = newMap;
     }
 
-
+    /*
+    retrive or calculate a character brigthness
+     */
     private double getCharBrightness(char c) {
         double charBrightness;
         if (charBrightnesses.containsKey(c)) {
@@ -152,11 +161,8 @@ public class SubImgCharMatcher {
         return charBrightness;
     }
 
-    /**
-     * perform a linear stretch of the given brightness
-     *
-     * @param brightness brightness of a character
-     * @return the new brightness
+    /*
+    calculate normalized value for given brightness.
      */
     private Double normalizeBrightness(Double brightness) {
         return (brightness - minBrightness) / (maxBrightness - minBrightness);

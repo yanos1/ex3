@@ -35,7 +35,9 @@ public class ImageGrayer {
         }
         return greyImg;
     }
-
+    /*
+     helper function to calculate the shade of a sub image.
+     */
     private double calculateShade(Image img) {
         double currentShade = 0;
         for (int i = 0; i < img.getWidth(); ++i) {
