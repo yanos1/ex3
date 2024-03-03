@@ -28,10 +28,9 @@ public class ImageToAsciiConverter {
      */
     public char[][] convertImageToAsciiArt() {
         ImagePadder imagePadder = new ImagePadder(this.img);
-        Color[][] padded = imagePadder.padImage();
-        Image paddedImage = new Image(padded, padded.length, padded[0].length);
-        ImageDivider imageDivider = new ImageDivider(paddedImage, resolution);
-        Color[][][] dividedImage = imageDivider.divideImage();
+        Image padded = imagePadder.padImage();
+        ImageDivider imageDivider = new ImageDivider(padded, resolution);
+        Image[][] dividedImage = imageDivider.divideImage();
         ImageGrayer grayer = new ImageGrayer(dividedImage);
         double[][] grayedImage = grayer.greyImage();
 

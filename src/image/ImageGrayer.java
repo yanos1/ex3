@@ -11,13 +11,13 @@ public class ImageGrayer {
     private static final double RED_TO_GREY_CONSTANT = 0.2126;
     private static final double GREEN_TO_GREY_CONSTANT = 0.7152;
     private static final double BLUE_TO_GREY_CONSTANT = 0.0722;
-    private final Color[][][] coloredImage;
+    private final Image[][] coloredImage;
 
     /**
      * contributor receiving the colored image to grey out.
      * @param coloredImage the colored image.
      */
-    public ImageGrayer(Color[][][] coloredImage) {
+    public ImageGrayer(Image[][] coloredImage) {
         this.coloredImage = coloredImage;
     }
 
@@ -29,16 +29,22 @@ public class ImageGrayer {
         double[][] greyImg = new double[coloredImage.length][coloredImage[0].length];
         for (int i = 0; i < coloredImage.length; ++i) {
             for (int j = 0; j < coloredImage[0].length; ++j) {
-                double currentShade = 0;
-                for (int k = 0; k < coloredImage[0][0].length; ++k) {
-                    currentShade +=
-                            coloredImage[i][j][k].getRed() * RED_TO_GREY_CONSTANT +
-                                    coloredImage[i][j][k].getGreen() * GREEN_TO_GREY_CONSTANT
-                                    + coloredImage[i][j][k].getBlue() * BLUE_TO_GREY_CONSTANT;
-                }
-                greyImg[i][j] = currentShade / (coloredImage[0][0].length * MAX_RGB_COLOR);
+                greyImg[i][j] =  calculateShade(coloredImage[i][j]);
+
             }
         }
         return greyImg;
+    }
+
+    private double calculateShade(Image img) {
+        double currentShade = 0;
+        for (int i = 0; i < img.getWidth(); ++i) {
+            for(int j =0; j < img.getHeight(); ++j) {
+                currentShade += img.getPixel(i,j).getRed() * RED_TO_GREY_CONSTANT +
+                            img.getPixel(i,j).getGreen() * GREEN_TO_GREY_CONSTANT +
+                            img.getPixel(i,j).getBlue() * BLUE_TO_GREY_CONSTANT;
+            }
+        }
+        return currentShade / (img.getHeight()*img.getWidth() * MAX_RGB_COLOR);
     }
 }
