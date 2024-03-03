@@ -22,10 +22,10 @@ public class AsciiArtAlgorithm {
         if (matcher == null) {
             matcher = new SubImgCharMatcher(asciiChars);
         } else {
+            matcher.resetChars();
             for (char c : asciiChars) {
                 matcher.addChar(c);
             }
-
         }
         this.img = img;
         this.resolution = resolution;

@@ -96,7 +96,6 @@ public class SubImgCharMatcher {
 
         }
     }
-
     /**
      * Removes a char from the charset
      */
@@ -116,7 +115,10 @@ public class SubImgCharMatcher {
             }
         }
     }
-    public void resetTree() {
+    /**
+        reset all characters in the tree.
+     */
+    public void resetChars() {
         this.treeMap.clear();
     }
     /*
