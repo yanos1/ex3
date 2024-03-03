@@ -1,5 +1,5 @@
-yan_won
-318862968
+yan_won,aviv.goldstein
+318862968,322336116
 
 1.)
     1.) ImageDivider class - a class that has 1 method divideImage, that takes an Image object and divides
@@ -25,6 +25,7 @@ yan_won
 
     8.) Exception classes. Added custom exceptions to handle incorrect format, Unknown command, too big
         resolution, empty charset, and wrong image path.
+
 
 2.)
     1.) TreeMap - We used a tree map for the SubImgCharMatcher class. This data structure utilizes a balanced
@@ -58,3 +59,18 @@ yan_won
     of the process, so exceptions give us an elegant solution. just throw a custom exception with a custom
     message whenever such problem arises, catch all of these specific exceptions in the main loop,
     and handle them there (in our case print them and move on to the next input request).
+
+
+4.)
+    We added the public function "resetChars" to SubImgCharMatcher.
+    In our design, the shell class is oblivious to the inner workings of the algorithm.
+    It keeps a list of characters, and only creates and calls AsciiArtAlgorithm's run method when needed.
+    This seems to be the best way to divide responsibilities and keep the encapsulation.
+    To make the program more efficient, we want the algorithm to create SubImgCharMatcher instance once,
+    to keep a brightness dictionary of previously used letters. to do that we make it a static instance.
+    But if the shell instance calls the algorithm with a set of characters, and then removes characters and
+    calls it again, we need a way to remove characters from SubImgCharMatcher without being aware of the
+    current characters inside it. so to do that we need a reset function (removeChar isn't enough).
+    We are aware this design trades off a bit of efficiency, cause even if the char list changed only a
+    little, the reset function still has to be called, but we think the encapsulation and responsibility
+    distribution is worth it (and the list of characters can't go over 128 anyway).
