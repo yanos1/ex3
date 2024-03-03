@@ -60,28 +60,3 @@ public class ImageDivider {
         dividedImage[i][j] = new Image(subImage,subImageSize,subImageSize);
     }
 }
-
-//
-//    public Color[][][] divideImage() {
-//        for (int i = 0; i < rows; ++i) {
-//            for (int j = 0; j < cols; ++j) {
-//                extractSubImage(i, j);
-//            }
-//        }
-//        return dividedImage;
-//    }
-//
-//    private void extractSubImage(int i, int j) {
-//        int startX = i * rows; // Calculate the starting x-coordinate of the sub-image
-//        int startY = j * cols; // Calculate the starting y-coordinate of the sub-image
-//
-//        for (int x = 0; x < rows; ++x) {
-//            for (int y = 0; y < cols; ++y) {
-//                dividedImage[i][j][x * cols + y] = img.getPixel(startX + x, startY + y);
-//            }
-//        }
-//    }
-//
-//
-//}
-

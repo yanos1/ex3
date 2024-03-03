@@ -4,11 +4,9 @@ import ascii_output.AsciiOutput;
 import ascii_output.ConsoleAsciiOutput;
 import ascii_output.HtmlAsciiOutput;
 import image.Image;
-
 import java.io.IOException;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
 
 /**
  *  Handles shell UI: gets/validates all parameters, activates the algorithm.
